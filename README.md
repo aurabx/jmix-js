@@ -192,6 +192,8 @@ samples/                     # Sample JSON files
 
 ### Schema Validation
 
+** This is Alpha quality code and has not yet been fully tested **
+
 The library uses configurable schema validation:
 
 ```typescript
