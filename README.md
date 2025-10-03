@@ -157,6 +157,36 @@ const payloadPath = await builder.decryptEnvelope(
 console.log(payloadPath);
 ```
 
+### Verify Payload Hash
+
+Verify the payload hash listed in `manifest.security.payload_hash`.
+
+- Plaintext payload/: compare directly
+- Encrypted payload.encrypted: requires the recipient private key to decrypt to a temp dir before verifying
+
+CLI demo:
+
+```sh
+# Plaintext envelope
+npm run demo:verify:hash -- ./tmp/<envelope_id>.JMIX
+
+# Encrypted envelope (requires private key)
+npm run demo:verify:hash -- ./tmp/<envelope_id>.JMIX <recipientPrivateKeyBase64>
+```
+
+Programmatic API:
+
+```ts
+import { JmixBuilder } from './dist/index.js';
+
+const builder = new JmixBuilder();
+const result = await builder.verifyPayloadHash(
+  './tmp/<envelope_id>.JMIX',
+  { recipientPrivateKeyBase64: '<privKey-if-encrypted>' }
+);
+console.log(result.ok, result.expected, result.computed);
+```
+
 ## Scripts
 
 ```bash

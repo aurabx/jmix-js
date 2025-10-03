@@ -504,4 +504,69 @@ export class JmixBuilder {
 
     return payloadDir;
   }
+
+  /**
+   * Verify the payload hash in manifest.security.payload_hash.
+   * - If payload/ exists: compute directly.
+   * - If payload.encrypted exists: requires recipientPrivateKeyBase64 to decrypt to a temporary folder.
+   * Returns { ok, expected, computed, mode } where mode is 'plaintext' or 'encrypted'.
+   */
+  async verifyPayloadHash(
+    envelopeDir: string,
+    opts: { recipientPrivateKeyBase64?: string; tempDir?: string } = {}
+  ): Promise<{ ok: boolean; expected?: string; computed?: string; mode: 'plaintext' | 'encrypted' }> {
+    const manifestPath = path.join(envelopeDir, 'manifest.json');
+    const manifestRaw = await fs.readFile(manifestPath, 'utf-8');
+    const manifest = JSON.parse(manifestRaw);
+    const expected: string | undefined = manifest?.security?.payload_hash;
+
+    const payloadDir = path.join(envelopeDir, 'payload');
+    const encryptedPath = path.join(envelopeDir, 'payload.encrypted');
+
+    try {
+      const stat = await fs.stat(payloadDir).catch(() => undefined);
+      if (stat && stat.isDirectory()) {
+        const computed = await this.computePayloadHash(payloadDir);
+        return { ok: !!expected && computed === expected, expected, computed, mode: 'plaintext' };
+      }
+    } catch {}
+
+    // Encrypted path
+    const encStat = await fs.stat(encryptedPath).catch(() => undefined);
+    if (encStat && encStat.isFile()) {
+      if (!opts.recipientPrivateKeyBase64) {
+        return { ok: false, expected, computed: undefined, mode: 'encrypted' };
+      }
+      // Decrypt to temp payload under ./tmp
+      const tmpRoot = path.resolve(opts.tempDir || this.outputPath || './tmp');
+      await fs.mkdir(tmpRoot, { recursive: true });
+      const tmpWork = path.join(tmpRoot, `verify-${randomUUID()}`);
+      await fs.mkdir(tmpWork, { recursive: true });
+
+      const ciphertext = await fs.readFile(encryptedPath);
+      const enc = manifest.security.encryption;
+      const tarBuf = PayloadDecryptor.decryptToBuffer(
+        ciphertext,
+        enc.ephemeral_public_key,
+        enc.iv,
+        enc.auth_tag,
+        opts.recipientPrivateKeyBase64
+      );
+      const tmpTar = path.join(tmpWork, 'payload.tar');
+      await fs.writeFile(tmpTar, tarBuf);
+      const tmpPayload = path.join(tmpWork, 'payload');
+      await fs.mkdir(tmpPayload, { recursive: true });
+      await tar.x({ cwd: tmpWork, file: tmpTar });
+
+      const computed = await this.computePayloadHash(tmpPayload);
+
+      // Cleanup
+      await fs.rm(tmpWork, { recursive: true, force: true });
+
+      return { ok: !!expected && computed === expected, expected, computed, mode: 'encrypted' };
+    }
+
+    // No payload present
+    return { ok: false, expected, computed: undefined, mode: 'plaintext' };
+  }
 }
