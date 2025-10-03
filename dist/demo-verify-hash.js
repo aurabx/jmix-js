@@ -6,7 +6,7 @@
 // - If payload/ exists, no key is required.
 // - If only payload.encrypted exists, pass the Curve25519 private key.
 
-import { JmixBuilder } from './dist/index.js';
+import { JmixBuilder } from './index.js';
 
 async function main() {
   const envelopeDir = process.argv[2];

@@ -6,7 +6,7 @@
 //
 // recipientPublicKeyBase64 is a Curve25519 (X25519) public key, 32 bytes base64.
 
-import { JmixBuilder } from './dist/index.js';
+import { JmixBuilder } from './index.js';
 
 async function main() {
   try {

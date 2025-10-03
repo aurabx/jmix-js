@@ -1,25 +1,21 @@
 #!/usr/bin/env node
 
-// Demo script to test the JMIX TypeScript library without schema validation
-import { JmixBuilder } from './dist/index.js';
+// Demo script to test the JMIX TypeScript library
+import { JmixBuilder } from './index.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
 async function demo() {
-  console.log('🚀 JMIX TypeScript Library Demo (No Validation)');
-  console.log('=================================================\n');
+  console.log('🚀 JMIX TypeScript Library Demo');
+  console.log('================================\n');
 
   try {
-    // Create a JmixBuilder instance with schema validation disabled
+    // Create a JmixBuilder instance
     const builder = new JmixBuilder({
-      outputPath: './tmp/demo',
-      schemaValidatorOptions: {
-        schemaPath: './non-existent-schemas', // Force schemas to not be found
-        strictMode: false
-      }
+      outputPath: './tmp/demo'
     });
 
-    console.log('✅ JmixBuilder created (validation disabled)');
+    console.log('✅ JmixBuilder created');
 
     // Create a sample configuration
     const config = await JmixBuilder.loadConfig('./samples/sample_config.json');
@@ -28,7 +24,7 @@ async function demo() {
     console.log('   Sender:', config.sender.name);
     console.log('   Security:', config.security.classification);
 
-    // Create a test DICOM directory (empty for demo)
+    // Use sample DICOM directory
     const testDicomPath = './samples/study_1';
     await fs.mkdir(testDicomPath, { recursive: true });
     console.log('✅ Using sample DICOM directory');
@@ -58,26 +54,8 @@ async function demo() {
       console.log(`   - ${file} (${Math.round(stats.size / 1024 * 10) / 10} KB)`);
     }
 
-    // Show a snippet of the manifest
-    console.log('\n📄 Sample manifest content:');
-    const manifestPath = path.join('./tmp/demo', 'manifest.json');
-    const manifestContent = await fs.readFile(manifestPath, 'utf-8');
-    const manifest = JSON.parse(manifestContent);
-    console.log(`   JMIX Version: ${manifest.jmix_version}`);
-    console.log(`   Created: ${manifest.created_at}`);
-    console.log(`   Sender: ${manifest.sender.name}`);
-    console.log(`   Patient: ${manifest.patient.name} (ID: ${manifest.patient.id})`);
-
     console.log('\n🎉 Demo completed successfully!');
-    console.log('\n📝 This demonstrates:');
-    console.log('  ✓ TypeScript JMIX library setup');
-    console.log('  ✓ ESM module imports');
-    console.log('  ✓ DICOM directory processing (empty folder fallback)');
-    console.log('  ✓ JMIX envelope generation');
-    console.log('  ✓ File output to ./tmp directory (as per user rules)');
-    console.log('  ✓ Schema validation gracefully skipped when schemas not found');
-    
-    console.log('\n🔍 To explore the generated files:');
+    console.log('\nTo explore the generated files:');
     console.log('  cat ./tmp/demo/manifest.json | jq .');
     console.log('  cat ./tmp/demo/metadata.json | jq .');
     console.log('  cat ./tmp/demo/audit.json | jq .');

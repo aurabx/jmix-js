@@ -4,7 +4,7 @@
 // Usage (self-contained):
 //   node demo-decrypt.js [dicomPath] [outputRoot]
 
-import { JmixBuilder } from './dist/index.js';
+import { JmixBuilder } from './index.js';
 import nacl from 'tweetnacl';
 import * as fs from 'fs/promises';
 

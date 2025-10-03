@@ -4,7 +4,7 @@
 // Usage:
 //   node demo-decrypt-existing.js <envelopeDir> <recipientPrivateKeyBase64>
 
-import { JmixBuilder } from './dist/index.js';
+import { JmixBuilder } from './index.js';
 
 async function main() {
   const envelopeDir = process.argv[2];

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Demo that packages a JMIX folder including original DICOM files
-import { JmixBuilder } from './dist/index.js';
+import { JmixBuilder } from './index.js';
 
 async function main() {
   try {

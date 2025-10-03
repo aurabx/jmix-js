@@ -23,11 +23,11 @@
     "format:fix": "prettier --write .",
     "clean": "rimraf dist ./tmp",
     "keys:gen": "node -e \"const n=require('tweetnacl');const kp=n.box.keyPair();console.log(Buffer.from(kp.publicKey).toString('base64'))\"",
-    "demo:package": "node demo-package.js ./samples/study_1 ./tmp",
-    "demo:package:encrypted": "node demo-package-encrypted.js",
-    "demo:decrypt": "node demo-decrypt.js ./samples/study_1 ./tmp",
-    "demo:decrypt:existing": "node demo-decrypt-existing.js",
-    "demo:verify:hash": "node demo-verify-hash.js"
+    "demo:package": "node dist/demo-package.js ./samples/study_1 ./tmp",
+    "demo:package:encrypted": "node dist/demo-package-encrypted.js",
+    "demo:decrypt": "node dist/demo-decrypt.js ./samples/study_1 ./tmp",
+    "demo:decrypt:existing": "node dist/demo-decrypt-existing.js",
+    "demo:verify:hash": "node dist/demo-verify-hash.js"
   },
   "dependencies": {
     "ajv": "^8.12.0",
