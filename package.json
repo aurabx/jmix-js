@@ -1,6 +1,6 @@
 {
   "name": "@aurabx/jmix-js",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "TypeScript implementation of JMIX (JSON Medical Interchange) format for secure medical data exchange",
   "type": "module",
   "main": "dist/index.js",
