@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2026-09-17
+
+### Fixed
+- Add a `default` condition to the package `exports` map so CommonJS consumers can `require('@aurabx/jmix-js')`. Only an `import` condition was declared before, so any `require()` of the package (including a TypeScript `import()` compiled under `module: commonjs`) failed with `ERR_PACKAGE_PATH_NOT_EXPORTED`. CommonJS loading relies on Node's `require(esm)` support, so CJS consumers need Node 20.19+ or 22.12+. ESM consumers are unaffected.
+- Add a `prepublishOnly` build step so a publish cannot ship a stale `dist/`.
+
 ## [0.2.0] - 2025-10-24
 
 ### Added
